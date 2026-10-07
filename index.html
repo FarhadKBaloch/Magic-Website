@@ -229,7 +229,7 @@
   }
   .newsletter .section-heading { font-size: clamp(24px, 3vw, 36px); margin-bottom: 16px; }
   .newsletter p { color: var(--muted); max-width: 500px; margin: 0 auto 32px; font-size: 15px; }
-  .newsletter-form { display: flex; gap: 12px; justify-content: center; max-width: 480px; margin: 0 auto; }
+  .newsletter-form { position: relative; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 480px; margin: 0 auto; }
   .newsletter-form input {
     flex: 1; padding: 14px 20px; background: var(--card); border: 1px solid var(--border);
     border-radius: 4px; color: var(--white); font-family: var(--sans); font-size: 14px;
@@ -254,7 +254,7 @@
   }
   .contact-links a:hover { color: var(--fde-light); }
   .contact-links a svg { stroke: var(--red-light); }
-  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .contact-form { position: relative; display: flex; flex-direction: column; gap: 16px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .contact-form input,
   .contact-form textarea {
@@ -275,6 +275,44 @@
     text-transform: uppercase; cursor: pointer; transition: background 0.3s;
   }
   .contact-form button:hover { background: var(--red-light); }
+  .contact-form button:disabled,
+  .newsletter-form button:disabled { opacity: 0.65; cursor: progress; }
+
+  .contact-form input[type="hidden"],
+  .newsletter-form input[type="hidden"] { display: none !important; }
+
+  .form-error[hidden],
+  .form-thanks[hidden] { display: none !important; }
+
+  .contact-form input.form-honey,
+  .newsletter-form input.form-honey {
+    position: absolute !important; left: 0 !important; top: 0 !important;
+    width: 1px !important; height: 1px !important; padding: 0 !important;
+    margin: -1px !important; overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important; clip-path: inset(50%) !important;
+    white-space: nowrap !important; border: 0 !important; opacity: 0 !important;
+    pointer-events: none !important; background: transparent !important;
+  }
+
+  .form-error {
+    margin: 0; font-size: 14px; line-height: 1.5; color: var(--red-light);
+  }
+  .newsletter-form .form-error { flex: 1 0 100%; text-align: center; }
+  .newsletter .form-error { max-width: none; margin: 0; color: var(--red-light); }
+
+  .form-thanks-title {
+    font-family: var(--serif); font-size: 32px; font-weight: 400;
+    color: var(--white); line-height: 1.2; margin-bottom: 12px;
+  }
+  .contact-form .form-thanks p:last-child {
+    font-size: 17px; line-height: 1.8; color: var(--body);
+  }
+  .newsletter .form-thanks { max-width: 480px; margin: 0 auto; color: var(--light); }
+  .form-thanks:focus { outline: 1px solid var(--fde-dim); outline-offset: 6px; }
+
+  .contact-form.is-sent > :not(.form-thanks),
+  .newsletter-form.is-sent > :not(.form-thanks) { display: none !important; }
+  .newsletter-form.is-sent { display: block; }
 
   footer {
     padding: 40px 48px; text-align: center; border-top: 1px solid var(--border);
@@ -453,10 +491,17 @@
   <div class="section-inner reveal">
     <h2 class="section-heading">Stay in the Loop</h2>
     <p>Be the first to hear about public shows and upcoming performances in Columbus.</p>
-    <div class="newsletter-form">
-      <input type="email" placeholder="Your email address">
-      <button type="button">Subscribe</button>
-    </div>
+    <form class="newsletter-form" action="https://formsubmit.co/farhadkbaloch@gmail.com" method="POST" accept-charset="UTF-8">
+      <input type="hidden" name="_subject" value="New newsletter signup from farhadbaloch.com">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="Inquiry Type" value="Newsletter signup">
+      <input type="email" name="email" placeholder="Your email address" aria-label="Email address" autocomplete="email" maxlength="200" required>
+      <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore="true">
+      <button type="submit">Subscribe</button>
+      <p class="form-error" role="alert" hidden></p>
+      <p class="form-thanks" role="status" tabindex="-1" hidden>Thank you. Your email is on its way to Farhad.</p>
+    </form>
   </div>
 </section>
 
@@ -468,37 +513,47 @@
         <h2 class="section-heading">Ready? Let's make magic.</h2>
         <p>Time is of the essence when planning your event. Fill out the form and Farhad will get back to you within 24 hours. You can also reach out directly.</p>
         <div class="contact-links">
-          <a href="mailto:your@email.com">
+          <a href="mailto:farhadkbaloch@gmail.com">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            your@email.com
+            farhadkbaloch@gmail.com
           </a>
-          <a href="tel:+16145551234">
+          <a href="tel:+18323021130">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            (614) 555-1234
+            832-302-1130
           </a>
         </div>
       </div>
-      <div class="contact-form reveal">
+      <form class="contact-form reveal" action="https://formsubmit.co/farhadkbaloch@gmail.com" method="POST" accept-charset="UTF-8">
+        <input type="hidden" name="_subject" value="New booking inquiry from farhadbaloch.com">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="Inquiry Type" value="Booking inquiry">
         <div class="form-row">
-          <input type="text" placeholder="First Name *">
-          <input type="text" placeholder="Last Name *">
+          <input type="text" name="First Name" placeholder="First Name *" aria-label="First Name" autocomplete="given-name" maxlength="100" required>
+          <input type="text" name="Last Name" placeholder="Last Name *" aria-label="Last Name" autocomplete="family-name" maxlength="100" required>
         </div>
         <div class="form-row">
-          <input type="email" placeholder="Email *">
-          <input type="tel" placeholder="Phone">
+          <input type="email" name="email" placeholder="Email *" aria-label="Email" autocomplete="email" maxlength="200" required>
+          <input type="tel" name="Phone" placeholder="Phone" aria-label="Phone" autocomplete="tel" maxlength="40">
         </div>
         <div class="form-row">
-          <input type="text" placeholder="Company *">
-          <input type="text" placeholder="Event Date(s)">
+          <input type="text" name="Company" placeholder="Company *" aria-label="Company" autocomplete="organization" maxlength="200" required>
+          <input type="text" name="Event Dates" placeholder="Event Date(s)" aria-label="Event Date(s)" maxlength="100">
         </div>
         <div class="form-row">
-          <input type="text" placeholder="Number of Guests">
-          <input type="text" placeholder="Location">
+          <input type="text" name="Guests" placeholder="Number of Guests" aria-label="Number of Guests" maxlength="50">
+          <input type="text" name="Location" placeholder="Location" aria-label="Location" maxlength="200">
         </div>
-        <input type="text" placeholder="How did you hear about Farhad?">
-        <textarea placeholder="Tell me about your event *"></textarea>
-        <button type="button">Send Message</button>
-      </div>
+        <input type="text" name="Referral" placeholder="How did you hear about Farhad?" aria-label="How did you hear about Farhad?" maxlength="200">
+        <textarea name="Message" placeholder="Tell me about your event *" aria-label="Tell me about your event" maxlength="5000" required></textarea>
+        <input type="text" name="_honey" class="form-honey" tabindex="-1" autocomplete="off" aria-hidden="true" data-lpignore="true" data-1p-ignore="true">
+        <button type="submit">Send Message</button>
+        <p class="form-error" role="alert" hidden></p>
+        <div class="form-thanks" role="status" tabindex="-1" hidden>
+          <p class="form-thanks-title">Thank you.</p>
+          <p>Your inquiry is on its way. Farhad will get back to you within 24 hours.</p>
+        </div>
+      </form>
     </div>
   </div>
 </section>
@@ -524,6 +579,71 @@
     });
   }, { threshold: 0.15 });
   reveals.forEach(el => observer.observe(el));
+
+  document.querySelectorAll('form[action*="formsubmit.co"]').forEach((form) => {
+    const button = form.querySelector('button[type="submit"]');
+    const thanks = form.querySelector('.form-thanks');
+    const error = form.querySelector('.form-error');
+    if (!button || !thanks || !error) return;
+    const idleLabel = button.textContent;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (form.dataset.sending === 'true') return;
+      error.hidden = true;
+      error.textContent = '';
+
+      form.querySelectorAll('input, textarea').forEach((field) => {
+        if (field.name === '_honey') return;
+        field.value = field.value.trim();
+      });
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      form.dataset.sending = 'true';
+
+      const payload = new URLSearchParams();
+      const data = new FormData(form);
+      const email = String(data.get('email') || '').trim();
+      if (email) data.set('_replyto', email);
+      for (const [key, value] of data.entries()) {
+        if (typeof value !== 'string' || value.trim() === '') continue;
+        payload.append(key, value.trim());
+      }
+
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      button.textContent = 'Sending…';
+
+      try {
+        const action = form.getAttribute('action') || '';
+        const endpoint = action.replace('://formsubmit.co/', '://formsubmit.co/ajax/');
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: payload.toString(),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || String(result.success) !== 'true') {
+          throw new Error(result.message || 'Submission failed');
+        }
+        form.classList.add('is-sent');
+        thanks.hidden = false;
+        thanks.focus();
+      } catch {
+        delete form.dataset.sending;
+        error.hidden = false;
+        error.textContent = 'Something went wrong sending this. Please email farhadkbaloch@gmail.com instead.';
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        button.textContent = idleLabel;
+      }
+    });
+  });
 </script>
 </body>
 </html>
