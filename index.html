@@ -209,19 +209,20 @@
   .perf-card p { font-size: 15px; line-height: 1.8; color: var(--body); }
 
   .reel { background: var(--black); text-align: center; }
-  .reel-placeholder {
+  .reel-frame {
     max-width: 900px; margin: 48px auto 0; aspect-ratio: 16/9;
     background: linear-gradient(135deg, var(--card), var(--dark));
-    border: 1px solid var(--border); border-radius: 8px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   }
-  .play-btn {
-    width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--red);
-    display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+  .reel-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .reel-youtube {
+    display: inline-block; margin-top: 24px;
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--fde); text-decoration: none;
+    border-bottom: 1px solid var(--fde-dim); padding-bottom: 4px;
+    transition: color 0.3s, border-color 0.3s;
   }
-  .play-btn:hover { background: var(--red-glow); }
-  .play-btn svg { fill: var(--red-light); margin-left: 4px; }
-  .reel-placeholder span { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .reel-youtube:hover { color: var(--fde-light); border-color: var(--fde-light); }
 
   .newsletter {
     padding: 80px 48px; background: var(--deep); text-align: center;
@@ -478,12 +479,16 @@
   <div class="section-inner">
     <div class="section-label reveal">See It Live</div>
     <h2 class="section-heading reveal">Watch the reel.</h2>
-    <div class="reel-placeholder reveal">
-      <div class="play-btn">
-        <svg width="20" height="24" viewBox="0 0 20 24"><polygon points="0,0 20,12 0,24"/></svg>
-      </div>
-      <span>Embed your demo reel video here</span>
+    <div class="reel-frame reveal">
+      <iframe
+        src="https://www.youtube-nocookie.com/embed/Kix8WrRiXYA"
+        title="Demo Reel"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
+    <a class="reel-youtube reveal" href="https://youtu.be/Kix8WrRiXYA" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
   </div>
 </section>
 
