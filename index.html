@@ -165,15 +165,11 @@
   .about { background: var(--deep); }
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
   .about-photo {
-    aspect-ratio: 3/4;
+    aspect-ratio: 1 / 1;
     background: linear-gradient(135deg, var(--card) 0%, var(--dark) 100%);
-    border-radius: 4px; display: flex; align-items: center; justify-content: center;
-    border: 1px solid var(--border);
+    border-radius: 4px; border: 1px solid var(--border); overflow: hidden;
   }
-  .about-photo span {
-    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--muted); border: 1px dashed var(--border); padding: 14px 24px;
-  }
+  .about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
   .about-text p { font-size: 17px; line-height: 1.85; color: var(--body); margin-bottom: 32px; }
   .stats { display: flex; gap: 48px; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border); }
   .stat-num { font-family: var(--serif); font-size: 42px; font-weight: 300; color: var(--red-light); line-height: 1; margin-bottom: 6px; }
@@ -209,19 +205,24 @@
   .perf-card p { font-size: 15px; line-height: 1.8; color: var(--body); }
 
   .reel { background: var(--black); text-align: center; }
-  .reel-placeholder {
-    max-width: 900px; margin: 48px auto 0; aspect-ratio: 16/9;
+  .reel-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px 28px;
+    margin-top: 48px; align-items: start;
+  }
+  .reel-frame {
+    aspect-ratio: 16/9;
     background: linear-gradient(135deg, var(--card), var(--dark));
-    border: 1px solid var(--border); border-radius: 8px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   }
-  .play-btn {
-    width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--red);
-    display: flex; align-items: center; justify-content: center; transition: all 0.3s;
+  .reel-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .reel-link {
+    display: inline-block; margin-top: 16px;
+    font-size: 12px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--fde); text-decoration: none;
+    border-bottom: 1px solid var(--fde-dim); padding-bottom: 4px;
+    transition: color 0.3s, border-color 0.3s;
   }
-  .play-btn:hover { background: var(--red-glow); }
-  .play-btn svg { fill: var(--red-light); margin-left: 4px; }
-  .reel-placeholder span { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .reel-link:hover { color: var(--fde-light); border-color: var(--fde-light); }
 
   .newsletter {
     padding: 80px 48px; background: var(--deep); text-align: center;
@@ -337,6 +338,7 @@
     .hero-photo-placeholder { width: 300px; height: 400px; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
     .perf-grid { grid-template-columns: 1fr; gap: 48px; }
+    .reel-grid { grid-template-columns: 1fr; gap: 40px; }
     .contact-grid { grid-template-columns: 1fr; gap: 48px; }
     .form-row { grid-template-columns: 1fr; }
     .stats { gap: 32px; flex-wrap: wrap; }
@@ -404,7 +406,9 @@
 <section class="about" id="about">
   <div class="section-inner">
     <div class="about-grid">
-      <div class="about-photo reveal"><span>Portrait Photo</span></div>
+      <div class="about-photo reveal">
+        <img src="images/farhad-baloch.jpg" alt="Farhad Baloch, mentalist" width="1400" height="1400">
+      </div>
       <div class="about-text reveal">
         <div class="section-label">About</div>
         <h2 class="section-heading">Meet the mind behind the mystery.</h2>
@@ -478,11 +482,31 @@
   <div class="section-inner">
     <div class="section-label reveal">See It Live</div>
     <h2 class="section-heading reveal">Watch the reel.</h2>
-    <div class="reel-placeholder reveal">
-      <div class="play-btn">
-        <svg width="20" height="24" viewBox="0 0 20 24"><polygon points="0,0 20,12 0,24"/></svg>
+    <div class="reel-grid">
+      <div class="reveal">
+        <div class="reel-frame">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/Kix8WrRiXYA"
+            title="Demo Reel"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+        <a class="reel-link" href="https://youtu.be/Kix8WrRiXYA" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
       </div>
-      <span>Embed your demo reel video here</span>
+      <div class="reveal">
+        <div class="reel-frame">
+          <iframe
+            src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FFarhadBalochMagic%2Fvideos%2F557348858209700%2F&amp;show_text=0"
+            title="Demo Reel"
+            loading="lazy"
+            scrolling="no"
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+        </div>
+        <a class="reel-link" href="https://www.facebook.com/FarhadBalochMagic/videos/557348858209700/" target="_blank" rel="noopener noreferrer">Watch on Facebook</a>
+      </div>
     </div>
   </div>
 </section>
