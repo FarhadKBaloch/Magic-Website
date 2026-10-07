@@ -30,6 +30,8 @@
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  /* Hide unfinished blocks. Remove class="is-placeholder" from the markup to show one again. */
+  .is-placeholder { display: none !important; }
   html { scroll-behavior: smooth; }
   body {
     font-family: var(--sans);
@@ -162,7 +164,7 @@
     font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); opacity: 0.5;
   }
 
-  .about { background: var(--deep); }
+  .about { background: var(--black); }
   .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
   .about-photo {
     aspect-ratio: 1 / 1;
@@ -190,7 +192,7 @@
   .testimonial-author { font-size: 14px; font-weight: 500; color: var(--fde); }
   .testimonial-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  .performances { background: var(--deep); }
+  .performances { background: var(--deep); text-align: center; }
   .perf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-top: 56px; }
   .perf-images { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
   .perf-img {
@@ -352,11 +354,12 @@
 <body>
 
 <nav id="nav">
-  <a href="#" class="nav-logo">Farhad Baloch</a>
+  <a href="#hero" class="nav-logo">Farhad Baloch</a>
   <div class="nav-links" id="navLinks">
     <a href="#about">About</a>
     <a href="#performances">Performances</a>
-    <a href="#testimonials">Testimonials</a>
+    <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+    <a href="#testimonials" class="is-placeholder">Testimonials</a>
     <a href="#reel">Watch Reel</a>
     <a href="#contact" class="nav-cta">Contact</a>
   </div>
@@ -365,10 +368,11 @@
   </button>
 </nav>
 
-<section class="hero">
+<section class="hero" id="hero">
   <div class="hero-bg"></div>
   <div class="hero-noise"></div>
-  <div class="hero-photo-placeholder"><span>Your Photo Here</span></div>
+  <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+  <div class="hero-photo-placeholder is-placeholder"><span>Your Photo Here</span></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Mentalist & Magician</div>
     <h1>Farhad Baloch</h1>
@@ -389,7 +393,8 @@
   </div>
 </section>
 
-<section class="logos">
+<!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+<section class="logos is-placeholder">
   <div class="section-label">Trusted By</div>
   <div class="logo-grid">
     <div class="logo-placeholder">Client Logo</div>
@@ -414,7 +419,8 @@
         <h2 class="section-heading">Meet the mind behind the mystery.</h2>
         <p>Farhad Baloch is a Columbus, Ohio-based mentalist and magician specializing in intimate, audience-centered performances for corporate events and private gatherings. His work sits at the intersection of psychology, showmanship, and human connection — creating experiences where the audience isn't just watching, they're part of every impossible moment.</p>
         <p>Whether reading thoughts across a boardroom or predicting choices at an intimate dinner, Farhad's performances leave audiences questioning everything they thought they knew about the limits of the human mind.</p>
-        <div class="stats">
+        <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+        <div class="stats is-placeholder">
           <div><div class="stat-num">—</div><div class="stat-label">Years Performing</div></div>
           <div><div class="stat-num">—</div><div class="stat-label">Shows to Date</div></div>
           <div><div class="stat-num">—</div><div class="stat-label">Corporate Clients</div></div>
@@ -424,7 +430,8 @@
   </div>
 </section>
 
-<section class="testimonials" id="testimonials">
+<!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+<section class="testimonials is-placeholder" id="testimonials">
   <div class="section-inner">
     <div class="section-label reveal">What They Say</div>
     <h2 class="section-heading reveal">Words from those who've<br>experienced the impossible.</h2>
@@ -457,7 +464,8 @@
     <h2 class="section-heading reveal">Unforgettable entertainment<br>for your event.</h2>
     <div class="perf-grid">
       <div class="perf-card reveal">
-        <div class="perf-images">
+        <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+        <div class="perf-images is-placeholder">
           <div class="perf-img wide">Stage Photo</div>
           <div class="perf-img">Photo</div>
           <div class="perf-img">Photo</div>
@@ -466,7 +474,8 @@
         <p>Farhad's stage performances are designed for groups of 15 to 500 and range from 20 to 60 minutes. The program is predominantly mentalism — mind reading, influence, predictions — sophisticated magic that captivates modern professional audiences. Every moment is highly interactive, with audience members participating from their seats and the stage.</p>
       </div>
       <div class="perf-card reveal">
-        <div class="perf-images">
+        <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
+        <div class="perf-images is-placeholder">
           <div class="perf-img wide">Close-Up Photo</div>
           <div class="perf-img">Photo</div>
           <div class="perf-img">Photo</div>
