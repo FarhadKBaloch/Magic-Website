@@ -6,7 +6,6 @@
 <title>Farhad Baloch | Mentalist and Magician in Columbus</title>
 <meta name="description" content="Farhad Baloch is a mentalist and magician in Columbus, Ohio. He performs mind reading for private parties and corporate events, on stage or up close.">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="images/farhad-hero.webp" type="image/webp">
 <style>
   :root {
     --black: #0a0a09;
@@ -69,20 +68,17 @@
   }
   .nav-cta:hover { background: var(--red) !important; color: var(--white) !important; }
   .nav-mobile-contact {
-    display: none;
-    align-items: center; justify-content: center;
-    padding: 8px 16px; border: 1px solid rgba(240,236,230,0.7);
-    border-radius: 999px; color: var(--white); background: rgba(10,10,9,0.4);
-    font-size: 13px; font-weight: 500; letter-spacing: 0.3px;
-    text-decoration: none; line-height: 1; transition: border-color 0.3s, color 0.3s;
+    display: none; padding: 10px 16px; background: var(--red); color: var(--white);
+    font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none; line-height: 1; border-radius: 0; flex-shrink: 0;
+    transition: background 0.3s;
   }
-  .nav-mobile-contact:hover { border-color: var(--fde-light); color: var(--fde-light); }
+  .nav-mobile-contact:hover { background: var(--red-light); }
 
   .hero {
-    position: relative; height: 100vh; height: 100svh; min-height: 640px;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    position: relative; height: 100vh; min-height: 700px;
+    display: flex; align-items: center; justify-content: center;
     text-align: center; overflow: hidden;
-    padding: 88px 20px 28px;
   }
   .hero-bg {
     position: absolute; inset: 0;
@@ -106,49 +102,21 @@
     font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
     color: var(--muted); border: 1px dashed var(--border); padding: 16px 28px;
   }
-  .hero-glow {
-    position: absolute; z-index: 0; pointer-events: none;
-    left: 50%; top: 40%; transform: translate(-50%, -50%);
-    width: min(640px, 110vw); height: min(820px, 78vh);
-    background:
-      radial-gradient(ellipse at center, rgba(163,139,94,0.32) 0%, rgba(163,139,94,0.08) 34%, transparent 68%),
-      radial-gradient(ellipse at 50% 72%, rgba(155,53,53,0.14) 0%, transparent 52%);
-  }
-  .hero-figure {
-    position: absolute; z-index: 1; left: 50%; bottom: 0;
-    height: 76%; transform: translateX(-50%);
-    pointer-events: none;
-  }
-  .hero-figure img {
-    display: block; height: 100%; width: auto;
-  }
-  .hero-content {
-    position: relative; z-index: 2; flex: 1; width: min(100%, 440px);
-    display: flex; flex-direction: column; align-items: center;
-    opacity: 1;
-  }
+  .hero-content { position: relative; z-index: 2; animation: fadeUp 1.2s ease-out; }
   .hero-eyebrow {
     font-size: 12px; font-weight: 500; letter-spacing: 5px;
-    text-transform: uppercase; color: var(--fde); margin: 0;
+    text-transform: uppercase; color: var(--fde); margin-bottom: 24px;
   }
   .hero h1 {
-    font-family: var(--serif); font-size: clamp(84px, 23vw, 128px);
-    font-weight: 600; color: var(--white); line-height: 0.8;
-    margin-top: auto; margin-bottom: 14px; letter-spacing: -1.5px;
-    opacity: 1;
-    text-shadow: 0 2px 18px rgba(0,0,0,0.72);
+    font-family: var(--serif); font-size: clamp(52px, 8vw, 96px);
+    font-weight: 300; color: var(--white); line-height: 1.05;
+    margin-bottom: 16px; letter-spacing: -1px;
   }
   .hero-sub {
-    font-family: var(--serif); font-size: clamp(20px, 4.6vw, 28px);
-    font-weight: 400; font-style: italic; color: var(--white); margin-bottom: 22px;
-    opacity: 1;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    font-family: var(--serif); font-size: clamp(20px, 3vw, 30px);
+    font-weight: 300; font-style: italic; color: var(--muted); margin-bottom: 40px;
   }
-  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 3; }
-  .hero .btn-primary { background: var(--red); color: var(--white); opacity: 1; }
-  .hero .btn-outline {
-    background: var(--black); color: var(--light); border-color: var(--border); opacity: 1;
-  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
   .btn-primary {
     display: inline-block; padding: 16px 40px; background: var(--red);
     color: var(--white); font-size: 12px; font-weight: 600;
@@ -163,7 +131,6 @@
   }
   .btn-outline:hover { border-color: var(--fde); color: var(--fde-light); }
   .hero-scroll {
-    display: none;
     position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
     z-index: 2; animation: float 3s ease-in-out infinite;
   }
@@ -365,25 +332,10 @@
   .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  @media (min-width: 901px) {
-    .hero { padding: 108px 48px 40px; min-height: 760px; }
-    .hero-glow {
-      width: min(780px, 56vw); height: min(880px, 86vh);
-    }
-    .hero-figure { height: 88%; }
-    .hero-content { width: min(100%, 980px); }
-    .hero h1 { font-size: clamp(120px, 11vw, 188px); }
-    .hero-sub { font-size: 28px; margin-bottom: 26px; }
-    .hero-buttons { gap: 16px; }
-  }
-
   @media (max-width: 900px) {
-    nav { padding: 16px 20px; }
+    nav { padding: 16px 24px; }
     .nav-links { display: none; }
-    .nav-mobile-contact { display: inline-flex; }
-    .hero { padding: 84px 20px 24px; }
-    .hero-buttons { flex-direction: column; align-items: stretch; width: min(100%, 300px); }
-    .hero-buttons a { width: 100%; text-align: center; padding: 14px 20px; }
+    .nav-mobile-contact { display: inline-block; }
     section { padding: 80px 24px; }
     .hero-photo-placeholder { width: 300px; height: 400px; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -416,20 +368,13 @@
 
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
-  <div class="hero-glow" aria-hidden="true"></div>
   <div class="hero-noise"></div>
   <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show. -->
   <div class="hero-photo-placeholder is-placeholder"><span>Your Photo Here</span></div>
-  <div class="hero-figure">
-    <picture>
-      <source srcset="images/farhad-hero.webp" type="image/webp">
-      <img src="images/farhad-hero.png" alt="Farhad Baloch, mentalist" width="672" height="1200" fetchpriority="high" decoding="async">
-    </picture>
-  </div>
   <div class="hero-content">
-    <p class="hero-eyebrow">Mentalist & Magician</p>
-    <h1>Farhad<br>Baloch</h1>
-    <p class="hero-sub">Columbus, Ohio</p>
+    <div class="hero-eyebrow">Mentalist & Magician</div>
+    <h1>Farhad Baloch</h1>
+    <div class="hero-sub">Columbus, Ohio</div>
     <div class="hero-buttons">
       <a href="#contact" class="btn-primary">Book a show</a>
       <a href="#reel" class="btn-outline">Watch me work</a>
