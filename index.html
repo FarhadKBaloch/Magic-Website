@@ -121,13 +121,11 @@
   }
   .hero-figure img {
     display: block; height: 100%; width: auto;
-    -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
   }
   .hero-content {
     position: relative; z-index: 2; flex: 1; width: min(100%, 440px);
     display: flex; flex-direction: column; align-items: center;
-    animation: fadeUp 1.2s ease-out;
+    opacity: 1;
   }
   .hero-eyebrow {
     font-size: 12px; font-weight: 500; letter-spacing: 5px;
@@ -135,15 +133,22 @@
   }
   .hero h1 {
     font-family: var(--serif); font-size: clamp(84px, 23vw, 128px);
-    font-weight: 500; color: var(--white); line-height: 0.8;
+    font-weight: 600; color: var(--white); line-height: 0.8;
     margin-top: auto; margin-bottom: 14px; letter-spacing: -1.5px;
-    text-shadow: 0 12px 36px rgba(0,0,0,0.55);
+    opacity: 1;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.72);
   }
   .hero-sub {
     font-family: var(--serif); font-size: clamp(20px, 4.6vw, 28px);
-    font-weight: 300; font-style: italic; color: var(--light); margin-bottom: 22px;
+    font-weight: 400; font-style: italic; color: var(--white); margin-bottom: 22px;
+    opacity: 1;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
   }
-  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 3; }
+  .hero .btn-primary { background: var(--red); color: var(--white); opacity: 1; }
+  .hero .btn-outline {
+    background: var(--black); color: var(--light); border-color: var(--border); opacity: 1;
+  }
   .btn-primary {
     display: inline-block; padding: 16px 40px; background: var(--red);
     color: var(--white); font-size: 12px; font-weight: 600;
