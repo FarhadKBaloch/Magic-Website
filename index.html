@@ -67,8 +67,13 @@
     text-transform: uppercase !important; cursor: pointer; transition: all 0.3s !important;
   }
   .nav-cta:hover { background: var(--red) !important; color: var(--white) !important; }
-  .mobile-toggle { display: none; background: none; border: none; cursor: pointer; }
-  .mobile-toggle span { display: block; width: 24px; height: 2px; background: var(--white); margin: 5px 0; transition: 0.3s; }
+  .nav-mobile-contact {
+    display: none; padding: 10px 16px; background: var(--red); color: var(--white);
+    font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
+    text-decoration: none; line-height: 1; border-radius: 0; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .nav-mobile-contact:hover { background: var(--red-light); }
 
   .hero {
     position: relative; height: 100vh; min-height: 700px;
@@ -330,12 +335,7 @@
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
     .nav-links { display: none; }
-    .mobile-toggle { display: block; }
-    .nav-links.open {
-      display: flex; flex-direction: column; position: absolute;
-      top: 100%; left: 0; right: 0; background: rgba(10,10,9,0.98);
-      padding: 32px 24px; gap: 24px; border-bottom: 1px solid var(--border);
-    }
+    .nav-mobile-contact { display: inline-block; }
     section { padding: 80px 24px; }
     .hero-photo-placeholder { width: 300px; height: 400px; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -363,9 +363,7 @@
     <a href="#reel">Watch me work</a>
     <a href="#contact" class="nav-cta">Contact</a>
   </div>
-  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <a href="#contact" class="nav-mobile-contact">Contact</a>
 </nav>
 
 <section class="hero" id="hero">
@@ -596,11 +594,6 @@
 <script>
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
-
-  const toggle = document.getElementById('mobileToggle');
-  const links = document.getElementById('navLinks');
-  toggle.addEventListener('click', () => links.classList.toggle('open'));
-  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => links.classList.remove('open')));
 
   const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
