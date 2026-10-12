@@ -53,8 +53,9 @@
   .nav-logo {
     font-family: var(--serif); font-size: 22px; font-weight: 400;
     color: var(--white); text-decoration: none; letter-spacing: 1px;
+    display: none; /* Hidden on every screen size. Remove this line to show the brand again. */
   }
-  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links { display: flex; gap: 32px; align-items: center; margin-left: auto; }
   .nav-links a {
     font-size: 13px; font-weight: 400; letter-spacing: 1.5px;
     text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s;
@@ -71,7 +72,7 @@
     display: none; padding: 10px 16px; background: var(--red); color: var(--white);
     font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
     text-decoration: none; line-height: 1; border-radius: 0; flex-shrink: 0;
-    transition: background 0.3s;
+    margin-left: auto; transition: background 0.3s;
   }
   .nav-mobile-contact:hover { background: var(--red-light); }
 
