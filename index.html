@@ -50,7 +50,10 @@
   ]
 }
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Outfit:wght@400;500;600&display=swap"></noscript>
 <style>
   :root {
     --black: #0a0a09;
@@ -221,6 +224,7 @@
     background: linear-gradient(135deg, var(--card) 0%, var(--dark) 100%);
     border-radius: 4px; border: 1px solid var(--border); overflow: hidden;
   }
+  .about-photo picture { display: block; width: 100%; height: 100%; }
   .about-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
   .about-text p { font-size: 17px; line-height: 1.85; color: var(--body); margin-bottom: 32px; }
   .stats { display: flex; gap: 48px; margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--border); }
@@ -268,6 +272,31 @@
     border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
   }
   .reel-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .reel-preview {
+    position: relative; display: block; width: 100%; height: 100%;
+    padding: 0; border: 0; cursor: pointer; background: var(--dark); color: var(--white);
+  }
+  .reel-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reel-preview-facebook {
+    background:
+      radial-gradient(ellipse at 50% 42%, rgba(163,139,94,0.2) 0%, transparent 58%),
+      radial-gradient(ellipse at 72% 78%, rgba(155,53,53,0.18) 0%, transparent 52%),
+      var(--dark);
+  }
+  .reel-play {
+    position: absolute; left: 50%; top: 50%; width: 68px; height: 48px;
+    margin: -24px 0 0 -34px; border-radius: 12px; background: var(--red);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    display: grid; place-items: center; pointer-events: none;
+  }
+  .reel-play::before {
+    content: ""; display: block; margin-left: 3px;
+    border-style: solid; border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent var(--white);
+  }
+  .reel-preview:hover .reel-play,
+  .reel-preview:focus-visible .reel-play { background: var(--red-light); }
+  .reel-preview:focus-visible { outline: 2px solid var(--fde-light); outline-offset: -3px; }
   .reel-link {
     display: inline-block; margin-top: 16px;
     font-size: 12px; font-weight: 500; letter-spacing: 2px;
@@ -370,7 +399,7 @@
 
   footer {
     padding: 40px 48px; text-align: center; border-top: 1px solid var(--border);
-    font-size: 12px; letter-spacing: 1px; color: var(--muted);
+    font-size: 12px; letter-spacing: 1px; color: #8a8176;
   }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
@@ -466,6 +495,10 @@
     .logos { padding: 48px 24px; }
     .newsletter { padding: 60px 24px; }
     .newsletter-form { flex-direction: column; }
+    .mg-field { opacity: 0.7; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mg-field { display: none; }
   }
 </style>
 </head>
@@ -543,7 +576,10 @@
   <div class="section-inner">
     <div class="about-grid">
       <div class="about-photo reveal">
-        <img src="images/farhad-baloch.jpg" alt="Farhad Baloch, mentalist" width="1400" height="1400">
+        <picture>
+          <source srcset="images/farhad-baloch.webp" type="image/webp">
+          <img src="images/farhad-baloch.jpg" alt="Farhad Baloch, mentalist" width="1400" height="1400" loading="lazy" decoding="async">
+        </picture>
       </div>
       <div class="about-text reveal">
         <div class="section-label">About me</div>
@@ -647,25 +683,32 @@
     <div class="reel-grid">
       <div class="reveal">
         <div class="reel-frame">
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/Kix8WrRiXYA"
-            title="Demo Reel"
-            loading="lazy"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-            referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <button
+            type="button"
+            class="reel-preview"
+            data-embed="https://www.youtube-nocookie.com/embed/Kix8WrRiXYA"
+            data-title="Demo Reel"
+            data-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            data-referrerpolicy="strict-origin-when-cross-origin"
+            aria-label="Play demo reel">
+            <img src="https://i.ytimg.com/vi/Kix8WrRiXYA/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" decoding="async">
+            <span class="reel-play" aria-hidden="true"></span>
+          </button>
         </div>
         <a class="reel-link" href="https://youtu.be/Kix8WrRiXYA" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
       </div>
       <div class="reveal">
         <div class="reel-frame">
-          <iframe
-            src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FFarhadBalochMagic%2Fvideos%2F557348858209700%2F&amp;show_text=0"
-            title="Demo Reel"
-            loading="lazy"
-            scrolling="no"
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            allowfullscreen></iframe>
+          <button
+            type="button"
+            class="reel-preview reel-preview-facebook"
+            data-embed="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FFarhadBalochMagic%2Fvideos%2F557348858209700%2F&amp;show_text=0"
+            data-title="Demo Reel"
+            data-allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            data-scrolling="no"
+            aria-label="Play Facebook demo reel">
+            <span class="reel-play" aria-hidden="true"></span>
+          </button>
         </div>
         <a class="reel-link" href="https://www.facebook.com/FarhadBalochMagic/videos/557348858209700/" target="_blank" rel="noopener noreferrer">Watch on Facebook</a>
       </div>
@@ -864,13 +907,17 @@
     var canvas = document.querySelector('.mg-field');
     if (!canvas || !canvas.getContext) return;
     var hero = canvas.parentElement, ctx = canvas.getContext('2d');
-    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var smallScreen = window.matchMedia('(max-width: 900px)');
+    var still = reduceMotion.matches;
     var w = 0, h = 0, pts = [], raf = 0, visible = true;
     var p = 0, born = 0, last = 0, shown = -1;
     var mouse = { x: -9999, y: -9999 };
 
     function seed() {
-      var n = Math.max(34, Math.min(120, Math.round(w * h / 8800)));
+      var n = smallScreen.matches
+        ? Math.max(16, Math.min(36, Math.round(w * h / 17000)))
+        : Math.max(34, Math.min(120, Math.round(w * h / 8800)));
       pts = [];
       for (var i = 0; i < n; i++) {
         pts.push({
@@ -885,7 +932,7 @@
     function size() {
       var nw = hero.clientWidth, nh = hero.clientHeight;
       if (!nw || !nh || (nw === w && nh === h)) return;
-      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var dpr = Math.min(window.devicePixelRatio || 1, smallScreen.matches ? 1 : 2);
       canvas.width = Math.round(nw * dpr); canvas.height = Math.round(nh * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       if (pts.length && Math.abs(nw - w) < w * 0.15) {   /* small change (a phone's toolbar): keep the motes, just rescale */
@@ -911,8 +958,9 @@
 
       var k = Math.min(1, p * 2.8); k = k * k * (3 - 2 * k);   /* 0 = drifting, 1 = gathered */
       var cx = w / 2, cy = h * 0.46;
+      var lite = smallScreen.matches;
       var RX = Math.min(w * 0.44, 470), RY = Math.min(h * 0.3, 200);
-      var spin = t * 0.00005, reach = 118 - 62 * k, i, j, q;
+      var spin = t * 0.00005, reach = lite ? (72 - 34 * k) : (118 - 62 * k), i, j, q;
 
       ctx.clearRect(0, 0, w, h);
       for (i = 0; i < pts.length; i++) {
@@ -935,14 +983,14 @@
         for (j = i + 1; j < pts.length; j++) {
           var ex = pts[i].x - pts[j].x, ey = pts[i].y - pts[j].y, e2 = ex * ex + ey * ey;
           if (e2 < reach * reach) {
-            ctx.strokeStyle = 'rgba(196,167,110,' + ((1 - Math.sqrt(e2) / reach) * 0.2 * fade).toFixed(3) + ')';
+            ctx.strokeStyle = 'rgba(196,167,110,' + ((1 - Math.sqrt(e2) / reach) * (lite ? 0.11 : 0.2) * fade).toFixed(3) + ')';
             ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
           }
         }
       }
       for (i = 0; i < pts.length; i++) {
         q = pts[i];
-        var glow = (0.5 + 0.3 * Math.sin(t * 0.0012 + q.ph)) * fade;
+        var glow = ((lite ? 0.32 : 0.5) + (lite ? 0.16 : 0.3) * Math.sin(t * 0.0012 + q.ph)) * fade;
         ctx.fillStyle = (q.red ? 'rgba(176,66,66,' : 'rgba(196,167,110,') + glow.toFixed(3) + ')';
         ctx.beginPath(); ctx.arc(q.x, q.y, q.s, 0, 6.2832); ctx.fill();
       }
@@ -956,6 +1004,14 @@
       mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
     });
     hero.addEventListener('pointerleave', function () { mouse.x = mouse.y = -9999; });
+    reduceMotion.addEventListener('change', function () {
+      still = reduceMotion.matches;
+      if (still) {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+      } else if (visible) start();
+    });
+    smallScreen.addEventListener('change', function () { w = 0; h = 0; size(); });
     if (window.ResizeObserver) new ResizeObserver(size).observe(hero);
     else window.addEventListener('resize', size);
     if (window.IntersectionObserver) {
@@ -966,6 +1022,25 @@
     }
     size();
   })();
+
+  document.querySelectorAll('.reel-preview').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var src = button.getAttribute('data-embed');
+      if (!src) return;
+      var frame = document.createElement('iframe');
+      var join = src.indexOf('?') === -1 ? '?' : '&';
+      frame.src = src + join + 'autoplay=1';
+      frame.title = button.getAttribute('data-title') || 'Video';
+      frame.setAttribute('allow', button.getAttribute('data-allow') || 'autoplay; encrypted-media; picture-in-picture');
+      frame.setAttribute('allowfullscreen', '');
+      var policy = button.getAttribute('data-referrerpolicy');
+      if (policy) frame.setAttribute('referrerpolicy', policy);
+      var scrolling = button.getAttribute('data-scrolling');
+      if (scrolling) frame.setAttribute('scrolling', scrolling);
+      button.replaceWith(frame);
+      frame.focus();
+    });
+  });
 </script>
 </body>
 </html>
