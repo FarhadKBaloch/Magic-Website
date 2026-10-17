@@ -23,6 +23,18 @@ const rec = (name, pass, detail = '') => {
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? '  (' + detail + ')' : ''}`);
 };
 
+// Always read the body. Leaving a response unread makes Node 22 on GitHub
+// Actions crash in its HTTP parser (assert(!this.paused)) and skip the checks.
+async function request(url) {
+  const response = await fetch(url);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  return {
+    status: response.status,
+    contentType: response.headers.get('content-type') || '',
+    text: new TextDecoder().decode(bytes),
+  };
+}
+
 function resolveExecutable() {
   if (process.env.CHROME) {
     if (!fs.existsSync(process.env.CHROME)) {
@@ -54,11 +66,12 @@ try {
 
   // 1. Pages and assets up
   const urls = [BASE, new URL('favicon.svg', BASE).href, new URL('images/farhad-baloch.jpg', BASE).href];
+  let fav = '';
   for (const u of urls) {
-    const r = await fetch(u);
+    const r = await request(u);
+    if (u === urls[1]) fav = r.text;
     rec(`HTTP 200: ${u}`, r.status === 200, `status ${r.status}`);
   }
-  const fav = await (await fetch(urls[1])).text();
   rec('Favicon is the FB card mark (SVG with red #9b3535 dot)', /<svg/i.test(fav) && /#9b3535/i.test(fav));
 
   // Desktop
@@ -102,7 +115,7 @@ try {
   await d.screenshot({ path: `${EV}/desktop-videos-clicked.png` });
   {
     const u = new URL('404.html', BASE).href;
-    const r = await fetch(u);
+    const r = await request(u);
     const p4 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
     await p4.goto(u, { waitUntil: 'networkidle' });
     const t = await p4.evaluate(() => document.body.innerText);
@@ -142,7 +155,7 @@ try {
     if (/^(mailto|tel):/.test(h)) continue;
     const u = new URL(h, BASE);
     if (u.host === new URL(BASE).host) {
-      const r = await fetch(u);
+      const r = await request(u);
       if (r.status !== 200) bad.push(`${h} -> ${r.status}`);
     }
   }
@@ -169,10 +182,9 @@ try {
       if (LIVE_HOSTS.has(published.hostname)) {
         fetchUrl = new URL(published.pathname + published.search, BASE);
       }
-      const r = await fetch(fetchUrl);
-      const ctype = r.headers.get('content-type') || '';
+      const r = await request(fetchUrl);
       const where = fetchUrl.href === published.href ? '' : `; fetched ${fetchUrl.href}`;
-      return [r.status === 200 && /^image\//.test(ctype), `${r.status} ${ctype}${where}`];
+      return [r.status === 200 && /^image\//.test(r.contentType), `${r.status} ${r.contentType}${where}`];
     } catch (e) {
       return [false, String(e)];
     }
@@ -201,11 +213,11 @@ try {
     rec('SEO: JSON-LD has Person, name, phone, email, 3 cities', false, 'no JSON-LD');
     rec('SEO: JSON-LD has no sameAs/aggregateRating/review (honesty rule)', false, 'no JSON-LD');
   }
-  const rb = await fetch(new URL('robots.txt', BASE));
-  const rbt = rb.status === 200 ? await rb.text() : '';
+  const rb = await request(new URL('robots.txt', BASE));
+  const rbt = rb.status === 200 ? rb.text : '';
   rec('SEO: robots.txt 200, allows all, lists sitemap', rb.status === 200 && /User-agent:\s*\*/i.test(rbt) && !/^Disallow:\s*\/\s*$/mi.test(rbt) && /Sitemap:\s*https:\/\/farhadbaloch\.com\/sitemap\.xml/i.test(rbt), `status ${rb.status}`);
-  const sm = await fetch(new URL('sitemap.xml', BASE));
-  const smt = sm.status === 200 ? await sm.text() : '';
+  const sm = await request(new URL('sitemap.xml', BASE));
+  const smt = sm.status === 200 ? sm.text : '';
   let smOk = false;
   if (smt) {
     const pg = await browser.newPage();
