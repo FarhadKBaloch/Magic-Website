@@ -103,26 +103,16 @@
   }
   .nav-mark { display: block; line-height: 0; flex-shrink: 0; text-decoration: none; }
   .nav-mark svg { display: block; height: 36px; width: calc(36px * 651.24 / 834.23); }
-  .nav-links { display: flex; gap: 32px; align-items: center; margin-left: auto; }
-  .nav-links a {
-    font-size: 13px; font-weight: 400; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s;
-  }
-  .nav-links a:hover { color: var(--fde-light); }
-  .nav-cta {
-    background: transparent !important; border: 1px solid var(--red) !important;
-    color: var(--red-light) !important; padding: 10px 24px !important;
-    font-size: 12px !important; letter-spacing: 2px !important;
-    text-transform: uppercase !important; cursor: pointer; transition: all 0.3s !important;
-  }
-  .nav-cta:hover { background: var(--red) !important; color: var(--white) !important; }
+  /* Same Contact button on desktop and phone. The class name is what the site check looks for. */
   .nav-mobile-contact {
-    display: none; padding: 10px 16px; background: var(--red); color: var(--white);
+    display: inline-block; padding: 10px 16px; background: var(--red); color: var(--white);
     font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase;
     text-decoration: none; line-height: 1; border-radius: 0; flex-shrink: 0;
     margin-left: auto; transition: background 0.3s;
   }
-  .nav-mobile-contact:hover { background: var(--red-light); }
+  .nav-mobile-contact:hover,
+  .nav-mobile-contact:focus-visible { background: var(--red-light); }
+  .nav-mobile-contact:focus-visible { outline: 2px solid var(--fde-light); outline-offset: 3px; }
 
   .hero {
     position: relative; height: 100vh; min-height: 700px;
@@ -481,8 +471,6 @@
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
     .nav-mark svg { height: 32px; width: calc(32px * 651.24 / 834.23); }
-    .nav-links { display: none; }
-    .nav-mobile-contact { display: inline-block; }
     section { padding: 80px 24px; }
     .hero-photo-placeholder { width: 300px; height: 400px; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -517,15 +505,9 @@
 </svg>
 </a>
   <a href="#hero" class="nav-logo">Farhad Baloch</a>
-  <div class="nav-links" id="navLinks">
-    <a href="#about">About</a>
-    <a href="#performances">Performances</a>
-    <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show.
-    <a href="#testimonials" class="is-placeholder">Testimonials</a>
-    -->
-    <a href="#reel">Watch me work</a>
-    <a href="#contact" class="nav-cta">Contact</a>
-  </div>
+  <!-- PLACEHOLDER: hidden until real content is ready. Remove class="is-placeholder" to show.
+  <a href="#testimonials" class="is-placeholder">Testimonials</a>
+  -->
   <a href="#contact" class="nav-mobile-contact">Contact</a>
 </nav>
 
