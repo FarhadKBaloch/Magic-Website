@@ -1,0 +1,14 @@
+{
+  "name": "verify-farhadbaloch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser checks for farhadbaloch.com. Run with ./verify.sh",
+  "scripts": {
+    "verify": "./verify.sh",
+    "verify:local": "./verify.sh --local"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "1.64.0"
+  }
+}
