@@ -1,0 +1,52 @@
+# Opens this repo in a browser and runs scripts/verify.
+# The job name "verify" is the status check to require on main.
+name: Verify site
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: scripts/verify/package-lock.json
+
+      - name: Install the checker
+        working-directory: scripts/verify
+        run: npm ci
+
+      - name: Install the headless browser
+        working-directory: scripts/verify
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve this copy of the site and run the checks
+        working-directory: scripts/verify
+        env:
+          VERIFY_SKIP_BROWSER_INSTALL: "1"
+        run: ./verify.sh --local
+
+      - name: Upload screenshots when a check fails
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: verify-evidence
+          path: scripts/verify/evidence/
+          if-no-files-found: warn
+          retention-days: 14
