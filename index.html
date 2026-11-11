@@ -174,14 +174,6 @@
     text-transform: uppercase; text-decoration: none; transition: all 0.3s;
   }
   .btn-outline:hover { border-color: var(--fde); color: var(--fde-light); }
-  .hero-scroll {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    z-index: 2; animation: float 3s ease-in-out infinite;
-  }
-  .hero-scroll span {
-    display: block; width: 1px; height: 60px;
-    background: linear-gradient(to bottom, var(--fde-dim), transparent); margin: 0 auto;
-  }
 
   section { padding: 120px 48px; }
   .section-inner { max-width: 1200px; margin: 0 auto; }
@@ -399,9 +391,9 @@
   }
 
   @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
-  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal { opacity: 1; transform: none; }
+  html.js .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+  html.js .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* ---------- Scroll motion: Thought Field (hero) ---------- */
   /* Gold motes behind the hero that gather into a halo around the name as the visitor scrolls. */
@@ -414,7 +406,6 @@
     transform: translateY(calc(var(--p, 0) * -70px));
     opacity: calc(1 - var(--p, 0) * 1.5);
   }
-  .hero .hero-scroll { opacity: calc(1 - var(--p, 0) * 4); }
 
   /* ---------- Scroll motion: The Fan (Performances) ---------- */
   /* A deck spreads into a fan, then the centre card lifts and turns over. --p is set by the scroll driver. */
@@ -493,6 +484,8 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .mg-field { display: none; }
+    html.js .reveal,
+    html.js .reveal.visible { opacity: 1; transform: none; transition: none; }
   }
 </style>
 </head>
@@ -533,7 +526,6 @@
       <a href="#reel" class="btn-outline">Watch me work</a>
     </div>
   </div>
-  <div class="hero-scroll"><span></span></div>
 </section>
 
 <section class="intro">
@@ -782,15 +774,19 @@
 
 <script>
   const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  reveals.forEach(el => observer.observe(el));
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.documentElement.classList.add('js');
+    reveals.forEach(el => observer.observe(el));
+  }
 
   document.querySelectorAll('form[action*="formsubmit.co"]').forEach((form) => {
     const button = form.querySelector('button[type="submit"]');
