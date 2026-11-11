@@ -5,13 +5,13 @@
 // EVIDENCE_DIR   Where screenshots and results.json are written.
 // CHROME         Optional path to a Chrome or Chromium binary.
 //
-// There are 31 checks. A missing check fails the run, so none can be dropped quietly.
+// There are 41 checks. A missing check fails the run, so none can be dropped quietly.
 // On a computer with Google Chrome installed, that Chrome is used.
 // In GitHub Actions (CI=true) the Chromium installed by the workflow is used.
 import { chromium } from 'playwright';
 import fs from 'fs';
 
-const EXPECTED_CHECKS = 31;
+const EXPECTED_CHECKS = 41;
 const BASE = process.env.SITE_URL || 'https://farhadbaloch.com/';
 const EV = process.env.EVIDENCE_DIR || './evidence';
 const LIVE_HOSTS = new Set(['farhadbaloch.com', 'www.farhadbaloch.com']);
@@ -22,6 +22,40 @@ const rec = (name, pass, detail = '') => {
   results.push({ name, pass, detail });
   console.log(`${pass ? 'PASS' : 'FAIL'}  ${name}${detail ? '  (' + detail + ')' : ''}`);
 };
+
+// Labels, headings, paragraphs, and links in the sections that were centered on desktop.
+// Hidden thanks and error copy stay centered, so they are not part of the section alignment.
+const TEXT_SECTIONS = [
+  '.intro', '.intro .section-label', '.intro .section-heading', '.intro p',
+  '.performances', '.performances .section-label', '.performances .section-heading', '.performances p',
+  '.reel', '.reel .section-label', '.reel .section-heading', '.reel-note', '.reel-link',
+  '.newsletter', '.newsletter .section-heading', '.newsletter p',
+];
+const PHONE_BUTTONS = [
+  '.btn-primary', '.btn-outline', '.nav-mobile-contact',
+  '.contact-form button', '.newsletter-form button',
+];
+
+async function alignmentReport(page, expected) {
+  return page.evaluate(({ sels, expected }) => {
+    const skip = (el) => el.matches('.form-error, .form-thanks')
+      || !!el.closest('.form-error, .form-thanks')
+      || el.hasAttribute('hidden')
+      || getComputedStyle(el).display === 'none';
+    return sels.map((sel) => {
+      const els = [...document.querySelectorAll(sel)].filter((el) => !skip(el));
+      if (!els.length) return { sel, ok: false, detail: 'missing' };
+      const bad = els
+        .map((el, i) => ({ i, align: getComputedStyle(el).textAlign }))
+        .filter((row) => row.align !== expected);
+      return {
+        sel,
+        ok: bad.length === 0,
+        detail: bad.length ? bad.map((row) => `${row.i}:${row.align}`).join(',') : `${els.length} ${expected}`,
+      };
+    });
+  }, { sels: TEXT_SECTIONS, expected });
+}
 
 // Always read the body. Leaving a response unread makes Node 22 on GitHub
 // Actions crash in its HTTP parser (assert(!this.paused)) and skip the checks.
@@ -74,6 +108,31 @@ try {
   }
   rec('Favicon is the FB card mark (SVG with red #9b3535 dot)', /<svg/i.test(fav) && /#9b3535/i.test(fav));
 
+  {
+    const context = await browser.newContext({
+      viewport: { width: 1280, height: 800 },
+      javaScriptEnabled: false,
+    });
+    const njs = await context.newPage();
+    await njs.goto(BASE, { waitUntil: 'load' });
+    const report = await njs.evaluate(() => {
+      const rows = [...document.querySelectorAll('.reveal')].map((el) => {
+        const style = getComputedStyle(el);
+        const visible = !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+        return { opacity: style.opacity, visible };
+      });
+      return { htmlClass: document.documentElement.className, rows };
+    });
+    const hidden = report.rows.filter((row) => row.opacity !== '1' || !row.visible);
+    rec(
+      'Sections below the hero are visible with JavaScript off',
+      report.rows.length >= 10 && hidden.length === 0,
+      `${report.rows.length} reveal blocks, ${hidden.length} not fully visible, html class="${report.htmlClass}"`,
+    );
+    await njs.screenshot({ path: `${EV}/nojs-desktop-full.png`, fullPage: true });
+    await context.close();
+  }
+
   // Desktop
   const d = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   await d.goto(BASE, { waitUntil: 'networkidle' });
@@ -93,6 +152,30 @@ try {
   rec('Contact shows farhadkbaloch@gmail.com', contactText.includes('farhadkbaloch@gmail.com'));
   const act = await d.$eval('#contact form.contact-form', f => [f.getAttribute('action'), f.method]);
   rec('Contact form posts to FormSubmit for farhadkbaloch@gmail.com (not submitted)', act[0] === 'https://formsubmit.co/farhadkbaloch@gmail.com' && act[1] === 'post', act.join(' '));
+  {
+    const ref = await d.$eval('input[name="Referral"]', (el) => ({
+      name: el.getAttribute('name'),
+      placeholder: el.getAttribute('placeholder'),
+      aria: el.getAttribute('aria-label'),
+    }));
+    const oldWording = await d.evaluate(() => document.documentElement.innerHTML.includes('How did you hear about Farhad'));
+    rec(
+      'Referral field asks "How did you hear about me?"',
+      ref.name === 'Referral' && ref.placeholder === 'How did you hear about me?' && ref.aria === 'How did you hear about me?' && !oldWording,
+      `placeholder=${ref.placeholder}; aria=${ref.aria}; old wording present=${oldWording}`,
+    );
+  }
+  {
+    const heroBits = await d.evaluate(() => ({
+      scrollLine: document.querySelectorAll('.scroll-line, .scroll-hint, .hero-scroll, .hero-scroll-line, .scroll-indicator').length,
+      specks: !!document.querySelector('#hero canvas.mg-field, .hero canvas.mg-field'),
+    }));
+    rec(
+      'Bouncing hero scroll line is absent; drifting specks canvas is present',
+      heroBits.scrollLine === 0 && heroBits.specks,
+      `scroll-line nodes=${heroBits.scrollLine}, mg-field=${heroBits.specks}`,
+    );
+  }
   for (const [label, sel] of [['YouTube', 'iframe[src*="youtube"]'], ['Facebook', 'iframe[src*="facebook.com/plugins/video"]']]) {
     if (await d.locator(sel).count() > 0) {
       rec(`${label} embed present`, true, 'iframe already loaded');
@@ -160,6 +243,16 @@ try {
     }
   }
   rec('Internal links not broken', bad.length === 0, bad.join(', '));
+
+  {
+    const rows = await alignmentReport(d, 'center');
+    const failed = rows.filter((row) => !row.ok);
+    rec(
+      'Desktop intro, performances, video, and newsletter stay centered',
+      rows.every((row) => row.ok),
+      failed.length ? failed.map((row) => `${row.sel} (${row.detail})`).join('; ') : `${rows.length} selectors`,
+    );
+  }
 
   // SEO checks
   const warn = (name, ok, detail = '') => console.log(`${ok ? 'OK  ' : 'WARN'}  ${name}${detail ? '  (' + detail + ')' : ''}`);
@@ -247,6 +340,98 @@ try {
   rec('Mobile red Contact button visible, #9b3535, links to form', await btn.isVisible() && bg === 'rgb(155, 53, 53)' && targetHasForm, `bg=${bg}, href=${href}`);
   rec('Mobile logo visible', await m.locator('nav .nav-mark svg').isVisible());
   await m.screenshot({ path: `${EV}/mobile-top.png` });
+
+  {
+    const hero = await m.evaluate(() => {
+      const mid = (el) => {
+        if (!el) return null;
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const box = range.getBoundingClientRect();
+        return (box.left + box.right) / 2;
+      };
+      const vw = window.innerWidth;
+      const buttons = [...document.querySelectorAll('.hero-buttons a')].map((a) => a.getBoundingClientRect());
+      const buttonMid = buttons.length
+        ? (Math.min(...buttons.map((box) => box.left)) + Math.max(...buttons.map((box) => box.right))) / 2
+        : null;
+      const heroEl = document.querySelector('.hero');
+      const btnRow = document.querySelector('.hero-buttons');
+      return {
+        vw,
+        eyebrow: mid(document.querySelector('.hero-eyebrow')),
+        name: mid(document.querySelector('.hero h1')),
+        city: mid(document.querySelector('.hero-sub')),
+        buttons: buttonMid,
+        textAlign: heroEl ? getComputedStyle(heroEl).textAlign : null,
+        justify: heroEl ? getComputedStyle(heroEl).justifyContent : null,
+        btnJustify: btnRow ? getComputedStyle(btnRow).justifyContent : null,
+      };
+    });
+    const center = hero.vw / 2;
+    const near = (x) => x != null && Math.abs(x - center) <= 8;
+    rec(
+      'Phone hero label, name, city, and buttons are centered',
+      near(hero.eyebrow) && near(hero.name) && near(hero.city) && near(hero.buttons) && hero.textAlign === 'center' && hero.justify === 'center' && hero.btnJustify === 'center',
+      `vw=${hero.vw}, mid eyebrow/name/city/buttons=${[hero.eyebrow, hero.name, hero.city, hero.buttons].map((n) => n == null ? 'missing' : n.toFixed(1)).join('/')}, text-align=${hero.textAlign}, justify=${hero.justify}, buttons=${hero.btnJustify}`,
+    );
+  }
+
+  {
+    const sizes = await m.evaluate((btnSels) => {
+      const labels = [...document.querySelectorAll('.section-label')].map((el) => ({
+        t: el.textContent.trim(),
+        fs: getComputedStyle(el).fontSize,
+      }));
+      const buttons = btnSels.flatMap((sel) => [...document.querySelectorAll(sel)].map((el) => ({
+        sel,
+        fs: getComputedStyle(el).fontSize,
+      })));
+      return { labels, buttons };
+    }, PHONE_BUTTONS);
+    rec(
+      'Phone section labels are 13px',
+      sizes.labels.length > 0 && sizes.labels.every((label) => label.fs === '13px'),
+      sizes.labels.map((label) => `${label.t}=${label.fs}`).join(', '),
+    );
+    rec(
+      'Phone buttons are 14px',
+      sizes.buttons.length > 0 && sizes.buttons.every((button) => button.fs === '14px'),
+      sizes.buttons.map((button) => `${button.sel}=${button.fs}`).join(', '),
+    );
+  }
+
+  {
+    const rows = await alignmentReport(m, 'left');
+    const failed = rows.filter((row) => !row.ok);
+    rec(
+      'Phone intro, performances, video, and newsletter text is left-aligned',
+      rows.every((row) => row.ok),
+      failed.length ? failed.map((row) => `${row.sel} (${row.detail})`).join('; ') : `${rows.length} selectors`,
+    );
+  }
+
+  {
+    const layout = await m.evaluate(() => {
+      const footer = document.querySelector('footer');
+      const form = document.querySelector('.newsletter-form');
+      const sub = form && form.querySelector('button');
+      const formBox = form && form.getBoundingClientRect();
+      const buttonBox = sub && sub.getBoundingClientRect();
+      return {
+        footerAlign: footer ? getComputedStyle(footer).textAlign : null,
+        formW: formBox ? formBox.width : null,
+        btnW: buttonBox ? buttonBox.width : null,
+      };
+    });
+    rec(
+      'Phone Subscribe button is full width',
+      layout.formW != null && layout.btnW != null && Math.abs(layout.btnW - layout.formW) <= 1,
+      `button=${layout.btnW} form=${layout.formW}`,
+    );
+    rec('Phone footer stays centered', layout.footerAlign === 'center', `text-align=${layout.footerAlign}`);
+  }
+
   await btn.click();
   await m.waitForTimeout(1200);
   const formTop = await m.$eval('#contact', e => e.getBoundingClientRect().top);
