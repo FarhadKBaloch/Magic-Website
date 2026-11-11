@@ -417,7 +417,19 @@
     --step: 8.5deg;                              /* angle between cards */
     position: relative; height: 216px; max-width: 360px; margin: 0 auto 40px;
   }
-  @media (max-width: 480px) { .mg-fan { --step: 6.4deg; } }
+  @media (max-width: 480px) {
+    .mg-fan { --step: 6.4deg; }
+    .section-label { font-size: 13px; }
+    .btn-primary,
+    .btn-outline,
+    .nav-mobile-contact,
+    .contact-form button,
+    .newsletter-form button { font-size: 14px; }
+    .intro p,
+    .performances p,
+    .reel-note,
+    .newsletter p { text-align: left; }
+  }
   .mg-card {
     position: absolute; left: 50%; top: 56px; width: 94px; height: 132px; margin-left: -47px;
     border-radius: 7px; transform-origin: 50% 250%;
